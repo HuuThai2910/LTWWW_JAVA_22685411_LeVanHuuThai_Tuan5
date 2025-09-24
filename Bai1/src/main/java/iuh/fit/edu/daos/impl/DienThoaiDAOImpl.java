@@ -5,8 +5,8 @@
 package iuh.fit.edu.daos.impl;
 
 import iuh.fit.edu.entities.DienThoai;
-import iuh.fit.edu.entities.NhaCungCap;
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityTransaction;
 import lombok.AllArgsConstructor;
 
 import java.util.List;
@@ -41,6 +41,63 @@ public class DienThoaiDAOImpl implements iuh.fit.edu.daos.DienThoaiDAO {
             return entityManager.createQuery(query, DienThoai.class)
                     .setParameter("id", id)
                     .getResultList();
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    @Override
+    public boolean save(DienThoai dienThoai) {
+        EntityTransaction entityTransaction = entityManager.getTransaction();
+        try {
+            entityTransaction.begin();
+            entityManager.persist(dienThoai);
+            entityTransaction.commit();
+            return true;
+        }catch (Exception e){
+            if(entityTransaction != null && entityTransaction.isActive())
+                entityTransaction.rollback();
+            e.printStackTrace();
+        }
+        return false;
+    }
+    @Override
+    public boolean update(DienThoai dienThoai) {
+        EntityTransaction entityTransaction = entityManager.getTransaction();
+        try {
+            entityTransaction.begin();
+            entityManager.merge(dienThoai);
+            entityTransaction.commit();
+            return true;
+        }catch (Exception e) {
+            if(entityTransaction != null && entityTransaction.isActive())
+                entityTransaction.rollback();
+            e.printStackTrace();
+        }
+        return false;
+    }
+    @Override
+    public boolean delete(Long maDienThoai){
+        EntityTransaction entityTransaction = entityManager.getTransaction();
+        try {
+            entityTransaction.begin();
+            DienThoai dienThoai = entityManager.find(DienThoai.class, maDienThoai);
+            entityManager.remove(dienThoai);
+            entityTransaction.commit();
+            return true;
+        }catch (Exception e){
+            if(entityTransaction != null && entityTransaction.isActive())
+                entityTransaction.rollback();
+            e.printStackTrace();
+        }
+        return false;
+    }
+    @Override
+    public DienThoai findById(Long id){
+        try {
+            return entityManager.find(DienThoai.class, id);
+
         }catch (Exception e){
             e.printStackTrace();
         }

@@ -31,4 +31,31 @@ public class NhaCungCapDAOImpl implements NhaCungCapDAO {
         }
         return null;
     }
+
+    @Override
+    public NhaCungCap findById(Long id){
+        try {
+            return entityManager.find(NhaCungCap.class, id);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return null;
+    }
+    @Override
+    public List<NhaCungCap> findByKeyword(String keyword){
+        String query = "Select n " +
+                "from NhaCungCap n " +
+                "where cast(n.maNhaCungCap as string) like :keyword " +
+                "or n.tenNhaCungCap like :keyword " +
+                "or n.diaChi like :keyword " +
+                "or n.soDienThoai like :keyword ";
+        try {
+            return entityManager.createQuery(query, NhaCungCap.class)
+                    .setParameter("keyword", "%" + keyword + "%")
+                    .getResultList();
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return null;
+    }
 }
